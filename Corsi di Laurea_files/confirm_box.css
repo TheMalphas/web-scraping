@@ -1,0 +1,85 @@
+#confirmOverlay{
+	background-color: rgba(0,0,0,0.5);
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: fixed;
+	z-index: 9999;
+}
+#confirmBox{
+	position:fixed;
+	/*margin:-160px 0 0 -140px;*/
+	padding:15px 5px 0 5px;
+	/*width:260px;*/
+	left:50%;
+	top:50%;
+	border:#069 4px solid;
+	background-color:#fff;
+	z-index:999999;
+}
+#confirmBox h1{
+	height:auto;
+	margin:0;
+	padding:10px 0;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:25px;
+	text-align:center;
+	text-transform:uppercase;
+	font-weight:600;
+	color:#069;
+	border-bottom:none
+}
+#confirmBox p{
+	padding:0 20px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:13px;
+	text-align:center;
+}
+#confirmButtons{
+	padding:10px 0 30px 0;
+	text-align:center;
+}
+#confirmBox .button {
+	position: relative;
+	display: inline-block;
+	width: 165px;
+	line-height: 24px;
+	/* margin: 0 15px 0 0; */
+	/* padding: 9px 0 0 0; */
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	text-transform: uppercase;
+	color: #FFFFFF;
+	border-radius: 4px;
+	border: 1px solid #ccc;
+	box-shadow: inset 0px 0px 5px #ccc;
+	/* background: url(/policy/img/buttons.png) no-repeat; */
+}
+#confirmBox .button:first-child{
+	margin-right: 15px;
+}
+#confirmBox .blue{
+	background-color: #2c70a1;
+}
+#confirmBox .blue:hover{
+	background-color: #A4E1FF;
+	color: #000;
+}
+#confirmBox .gray{
+	background-color: #FF6600;
+}
+#confirmBox .gray:hover{
+	background-color: #FFD6BA;
+	color: #000;
+}
+
+@media (max-width: 767px) {
+	#confirmBox{
+		margin: 0px !important;
+		width: 100%;
+		top: 0;
+		left: 0;
+	}
+}

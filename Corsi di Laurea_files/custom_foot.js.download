@@ -1,0 +1,107 @@
+function getParam(p) {
+	var match = RegExp('[?&]' + p + '=([^&]*)').exec(window.location.search);
+	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function getExpiryRecord(value) {
+	var expiryPeriod = 90 * 24 * 60 * 60 * 1000; // 90 day expiry in milliseconds
+
+	var expiryDate = new Date().getTime() + expiryPeriod;
+	return {
+		value: value,
+		expiryDate: expiryDate
+	};
+}
+
+function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+function setCookie(cname, cvalue, exdays) {
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	var expires = "expires="+ d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+
+function addGclid() {
+	var gclidParam = getParam('gclid');
+	var gclidFormFields = ['gclid_field', 'foobar']; // all possible gclid form field ids here
+	var gclidRecord = null;
+	var currGclidFormField;
+
+	var gclsrcParam = getParam('gclsrc');
+	var isGclsrcValid = !gclsrcParam || gclsrcParam.indexOf('aw') !== -1;
+
+	gclidFormFields.forEach(function(field) {
+		if (document.getElementById(field)) {
+			currGclidFormField = document.getElementById(field);
+		}
+	});
+
+	if (gclidParam && isGclsrcValid) {
+		gclidRecord = getExpiryRecord(gclidParam);
+		localStorage.setItem('gclid', JSON.stringify(gclidRecord));
+	}
+
+	var gclid = gclidRecord || JSON.parse(localStorage.getItem('gclid'));
+	var isGclidValid = gclid && new Date().getTime() < gclid.expiryDate;
+
+	if (currGclidFormField && isGclidValid) {
+		currGclidFormField.value = gclid.value;
+
+	}
+}
+
+function addIdCampagna() {
+	console.log("addIdCampagna");
+	//var idCampagnaCookie= JSON.parse(localStorage.getItem('idcampagna')) || null;
+	var idCampagnaCookie = getCookie("idcampagna");
+	var adwId= getParam("gaidm");
+	//var idcampagnaValue="";
+	//var idcampagnaRecord=null;
+
+	//console.log("adwid: "+adwId);
+	//console.log("idCampagnaCookie:"+idCampagnaCookie);
+
+	//se esiste idcampagna nei cookie setto il valore per successivi controlli
+	/*if(idCampagnaCookie){
+		idcampagnaValue=idCampagnaCookie.value;
+	}
+	*/
+
+	if (adwId!=null && adwId!=undefined && adwId!=""){
+
+		if (adwId=="11636"){
+			adwId="116356";
+		}
+
+		if((idCampagnaCookie!="" && adwId!="") || (idCampagnaCookie=="" && adwId!="")){
+			//console.log("idcampagna settato con adwid");
+			//idcampagnaRecord=getExpiryRecord(adwId);	//imposto adwid come valore nell'oggetto che poi memorizzo nei cookie
+			//localStorage.setItem('idcampagna', JSON.stringify(idcampagnaRecord));
+			setCookie("idcampagna",adwId,90);
+		}else{
+			//console.log("idcampagna settato con idcampagnaOLD");
+			//idcampagnaRecord=getExpiryRecord(idCampagnaCookie);	//imposto adwid come valore nell'oggetto che poi memorizzo nei cookie
+			//localStorage.setItem('idcampagna', JSON.stringify(idcampagnaRecord));
+			setCookie("idcampagna",idCampagnaCookie,90);
+		}
+	}
+}
+
+window.addEventListener('load', addGclid);
+window.addEventListener('load', addIdCampagna);

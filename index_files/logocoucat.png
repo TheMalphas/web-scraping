@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" ng-app="catalogo">
+    <head>
+        <base href="/">
+	    <meta charset="utf-8">
+        <title ng-bind="ngMeta.title">Course Catalogue</title>
+        <meta name="description" content="Catalogo dei Corsi di Studio offerti dall'Ateneo"/>
+        <meta name="robots" content="noodp,noydir"/>
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <!-- favicons -->
+		<link rel="apple-touch-icon" sizes="180x180" ng-href="/img/{{ateneo.ate_cod}}/favicons/apple-touch-icon.png" ng-if="ateneo.ate_cod">
+		<link rel="icon" type="image/png" ng-href="/img/{{ateneo.ate_cod}}/favicons/favicon-32x32.png" sizes="32x32" ng-if="ateneo.ate_cod">
+		<link rel="icon" type="image/png" ng-href="/img/{{ateneo.ate_cod}}/favicons/favicon-16x16.png" sizes="16x16" ng-if="ateneo.ate_cod">
+		<link rel="manifest" ng-href="/img/default/favicons/manifest.json" ng-if="ateneo.ate_cod">
+		<link rel="mask-icon" ng-href="/img/{{ateneo.ate_cod}}/favicons/safari-pinned-tab.svg" color="#5bbad5" ng-if="ateneo.ate_cod">
+		<meta name="theme-color" content="#ffffff">
+		 <!-- /favicons -->
+        <link rel="stylesheet" href="/css/app.css">
+        <!-- tema base -->
+        <link rel="stylesheet" href="/css/theme/default.css">
+        <!-- tema specifico del tenant -->
+        <link rel="stylesheet" ng-href="/css/theme/{{ateneo.ate_cod}}.css" ng-if="ateneo.ate_cod">
+
+        <!-- librerie -->
+        <script src="/lodash/lodash.js"></script> <!-- lodash -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script> <!-- moment -->
+        <script src="/angular/angular.min.js"></script> <!-- angular core -->
+        <script src="/angular-resource/angular-resource.min.js"></script> <!-- chiamate ajax -->
+        <script src="/angular-sanitize/angular-sanitize.min.js"></script> <!-- sanitize html -->
+        <script src="/angular-animate/angular-animate.min.js"></script> <!-- animazioni -->
+        <script src="/@uirouter/angularjs/release/angular-ui-router.min.js"></script> <!-- routing -->
+        <script src="/ng-meta/dist/ngMeta.min.js"></script> <!-- meta della pagina  -->
+        <script src="/angular-scroll/angular-scroll.min.js"></script> <!-- effetti scroll -->
+        <script src="/ng-notify/dist/ng-notify.min.js"></script> <!-- messaggi  -->
+        <script src="/angular-loading-bar/build/loading-bar.min.js"></script> <!-- progress bar  -->
+        <script src="/angular-sticky-plugin/dist/angular-sticky.min.js"></script> <!-- sticky elements allo scroll  -->
+        <script src="/angular-local-storage/dist/angular-local-storage.min.js"></script> <!-- local storage per persistere la lingua -->
+        <script src="/file-saver/dist/FileSaver.min.js"></script>
+        <script src="/bootcomplete/dist/bootcomplete.min.js"></script>
+
+        <!-- logiche -->
+        <!-- injector:js -->
+        <script src="/js/min/output.min.js"></script>
+        <!-- endinjector -->
+
+    </head>
+    <body id="top">
+        <div class="overlay" aria-hidden="true"></div>
+        <app></app>
+    </body>
+</html>

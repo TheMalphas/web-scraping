@@ -1,0 +1,140 @@
+﻿/*
+*
+*   e-campuse
+*   #brand #color #custom #skin #fonts #theme
+* 
+*/
+
+@import url('https://static.cineca.it/gf/css?family=Noto+Serif:700,400|Open+Sans:300,400,400i,600,700');
+
+/* #theme #common */
+
+body {
+    color: #282828; /* colore del testo */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body,
+input,
+select,
+textarea,
+.u-font-text {
+    font-family: 'Open Sans', sans-serif;
+}
+
+a,
+.u-color-links {
+    color: #1461B7; /* colore dei links */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.u-font-headings {
+    font-weight: bold;
+    font-family: 'Noto Serif', serif;
+}
+
+.u-color-text-light { /* colore del testo più chiaro */
+    color: #666666;
+}
+
+/* loading bar (sovrascrive gli stile del plugin) */
+
+#loading-bar .bar {
+    background: orange;
+    height: 4px;
+}
+
+/* filetto sotto i titoli */
+
+.u-filetto::after {
+    background: #245C84;
+}
+
+/* #header della pagina */
+
+.masthead {
+    background: white;
+}
+
+ /* colore principale dell'header */
+
+.masthead button {
+    color: #245C84;
+}
+
+.masthead a {
+    color: white;
+}
+
+/* sfondo del sottoheader e della sua select */
+
+.masthead-title,
+.masthead-title select { 
+    background-color: #245C84;
+}
+
+/* colore del sottoheader e della sua select */
+
+.masthead-title-select,
+.masthead select {
+    color: white;
+}
+
+/* colore del filetto del menu off-canvas */
+
+.masthead-menu-body li {
+    border-color: #245C84;
+}
+
+/* menu di utilità in fondo alla pagina */
+
+.secondary-menu {
+    background: #2C2826; 
+}
+
+.secondary-menu a,
+.secondary-menu {
+    color: white;
+}
+
+/* footer in fondo alla pagina */
+
+.closure {
+    background: #eee;
+    color: #2C2826;
+}
+
+/* modale */
+
+.modal-header {
+    background: #FFFFFF;
+}
+
+.modal-title,
+.modal button {
+    color: #245C84;
+}
+
+/* Navigazione anni */
+
+.corso-insegnamenti-nav.is-sticky { /* border sotto gli anni  nel mobile */
+    border-color: #245C84;
+}
+
+.corso-insegnamenti-nav a.active { /* sfondo anno corrente nel desktop */
+    background: #245C84;
+    color: white;
+}
+
+/* bottone primario */
+
+button.primary {
+    background: #245C84;
+    border-color: #808080;
+    color: white;
+}

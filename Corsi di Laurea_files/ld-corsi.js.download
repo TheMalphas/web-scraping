@@ -1,0 +1,15 @@
+console.log("codice Corsi di Laurea");
+var ctots = "";
+if(new RegExp("^https://(www\\.)?uniecampus.it","i").test(document.referrer) == false ){
+  ctots = (Date.now()+(60*60*2*1000)).toString().substring(0,10);
+}
+//console.log("ctots: "+ctots);
+window.criteo_q = window.criteo_q || [];
+var deviceType = /iPad/.test(navigator.userAgent) ? "t" : /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Silk/.test(navigator.userAgent) ? "m" : "d";
+window.criteo_q.push(
+  { event: "setAccount", account: 9668 },
+  { event: "setSiteType", type: deviceType },
+  { event: "setEmail", email: "" },
+  { event: "viewList", item:[ "Ecampus.Universita","Ecampus.Ideale","Ecampus.Telematica.Giuri","Ecampus.Telematica.Ingegneria","Ecampus.Telematica.Economia","Ecampus.Telematica.Psicologia","Ecampus.Telematica.Lettere","Ecampus.Telematica.Scuola" ], ctots: ctots}
+);
+console.log("FINALE CORSI DI LAUREA");

@@ -1,0 +1,1118 @@
+/* ************************************** */
+/* *****PARAMETRI GESTIONE SCROLL-TO***** */
+/* ************************************** */
+var SCROLL_TO_DURATION = 350; // DURATION OF THE TOP SCROLLING ANIMATION (IN MS)
+var HEADER_OFFSET = $("#main-header").height();
+
+jQuery(document).ready(function($) {
+
+  /*
+   * blinker novità APP
+   */
+
+  var blinkers = ["blinker1", "blinker2"];
+  var blinkerInterval = 1500;
+  var blinker1 = $("#blinker1");
+  var blinker2 = $("#blinker2");
+  var blinkerIndex = 0;
+
+
+  function blinking() {
+
+    if (blinkerIndex == 0) {
+      blinker1.fadeOut(200, function() {
+        blinker2.fadeIn(200);
+      })
+
+    } else {
+      blinker2.fadeOut(200, function() {
+        blinker1.fadeIn(200);
+      })
+
+    }
+    //blinker1.html(blinkers[blinkerIndex][0]);
+    //blinker2.html(blinkers[blinkerIndex][1]);
+    blinkerIndex = (blinkerIndex + 1) % blinkers.length;
+    setTimeout(blinking, blinkerInterval);
+  }
+
+  blinking();
+
+  "use strict";
+
+  //Attivazione bootstrap tooltip
+  $('[data-toggle="tooltip"]').tooltip();
+
+
+
+  $(".count-number").appear(function() {
+    var datacount = $(this).attr('data-count');
+    $(this).find('.count-focus').delay(6000).countTo({
+      from: 10,
+      to: datacount,
+      speed: 3000,
+      refreshInterval: 50,
+    });
+  });
+
+
+  $(document).on('scroll', function() {
+    //console.log($(window).scrollTop());
+    // if the scroll distance is greater than 100px
+    if ($(window).scrollTop() > 150) {
+      // do something
+      $('.site-header').addClass('scrolled-header');
+    } else {
+      $('.site-header').removeClass('scrolled-header');
+    }
+  });
+
+  $(window).load(function() {
+    $('.flexslider').flexslider({
+      animation: "slide",
+      controlNav: "thumbnails"
+    });
+  });
+
+  $(function() {
+    $('a[href="#site-search"]').on('click', function(event) {
+      event.preventDefault();
+      $('#site-search').addClass('open');
+      $('#site-search > form > input[type="text"]').focus();
+    });
+
+    $('#site-search, #site-search button.close').on('click keyup', function(event) {
+      if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
+        $(this).removeClass('open');
+        $('#site-search > form > input[type="text"]').val("");
+      }
+    });
+
+
+    //Do not include! This prevents the form from submitting for DEMO purposes only!
+    /*
+     $('form').submit(function(event) {
+        event.preventDefault();
+        return false;
+     });
+     */
+  });
+
+  $(function() {
+    $('a[href="#light-box"]').on('click', function(event) {
+      event.preventDefault();
+      $('#light-box').addClass('open');
+      $('#light-box > form > input[type="light-box"]').focus();
+    });
+
+    $('#light-box, #light-box button.close').on('click keyup', function(event) {
+      if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
+        $(this).removeClass('open');
+      }
+    });
+
+
+    //Do not include! This prevents the form from submitting for DEMO purposes only!
+    /*
+     $('form').submit(function(event) {
+        event.preventDefault();
+        return false;
+     });
+     */
+  });
+
+  // init Isotope
+  var portfolioGrid = $('#portfolio-grid');
+
+  portfolioGrid.imagesLoaded(function() {
+    portfolioGrid.isotope({
+      itemSelector: '.item',
+      layoutMode: 'fitRows',
+      filter: ".nord",
+      "masonry": { "columnWidth": ".portfolio-grid-sizer" }
+    });
+  });
+
+  // filter functions
+  var filterFns = {
+    // show if number is greater than 50
+    numberGreaterThan50: function() {
+      var number = $(this).find('.number').text();
+      return parseInt(number, 10) > 50;
+    },
+    // show if name ends with -ium
+    ium: function() {
+      var name = $(this).find('.name').text();
+      return name.match(/ium$/);
+    }
+  };
+
+  // bind filter button click
+  $('#projects-filter').on('click', 'a', function() {
+    var filterValue = $(this).attr('data-filter');
+    // use filterFn if matches value
+    filterValue = filterFns[filterValue] || filterValue;
+    portfolioGrid.isotope({ filter: filterValue });
+    return false;
+  });
+
+  // change is-checked class on buttons
+  $('#projects-filter').each(function(i, buttonGroup) {
+    var $buttonGroup = $(buttonGroup);
+    $buttonGroup.on('click', 'a', function() {
+      $buttonGroup.find('.active').removeClass('active');
+      $(this).addClass('active');
+    });
+  });
+
+
+
+  // Accordion script
+  function close_accordion_section() {
+    $('.accordion .accordion-section-title').removeClass('active');
+    $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
+  }
+
+  $('.accordion-section-title').on("click", function(e) {
+    // Grab current anchor value
+    var currentAttrValue = $(this).attr('href');
+
+    if ($(e.target).is('.active')) {
+      close_accordion_section();
+    } else {
+      close_accordion_section();
+
+      // Add active class to section title
+      $(this).addClass('active');
+      // Open up the hidden content panel
+      $('.accordion ' + currentAttrValue).slideDown(300).addClass('open');
+    }
+
+    e.preventDefault();
+  });
+
+
+  // Tabs script
+  jQuery('.tabs .tab-links a').on('click', function(e) {
+    var currentAttrValue = jQuery(this).attr('href');
+
+    // Show/Hide Tabs
+    jQuery('.tabs ' + currentAttrValue).fadeIn(500).siblings().hide();;
+
+    // Change/remove current tab to active
+    jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+
+    e.preventDefault();
+  });
+
+  // Animation on scroll
+  new WOW().init();
+
+
+
+  // Portfolio Isotope Filter
+
+  // init Isotope
+  var portfolioGrid = $('#portfolio-grid');
+
+  portfolioGrid.imagesLoaded(function() {
+    portfolioGrid.isotope({
+      itemSelector: '.item',
+      layoutMode: 'fitRows',
+      "masonry": { "columnWidth": ".portfolio-grid-sizer" }
+    });
+  });
+
+  // filter functions
+  var filterFns = {
+    // show if number is greater than 50
+    numberGreaterThan50: function() {
+      var number = $(this).find('.number').text();
+      return parseInt(number, 10) > 50;
+    },
+    // show if name ends with -ium
+    ium: function() {
+      var name = $(this).find('.name').text();
+      return name.match(/ium$/);
+    }
+  };
+
+  // bind filter button click
+  $('#projects-filter').on('click', 'a', function() {
+    var filterValue = $(this).attr('data-filter');
+    // use filterFn if matches value
+    filterValue = filterFns[filterValue] || filterValue;
+    portfolioGrid.isotope({ filter: filterValue });
+    return false;
+  });
+
+  // change is-checked class on buttons
+  $('#projects-filter').each(function(i, buttonGroup) {
+    var $buttonGroup = $(buttonGroup);
+    $buttonGroup.on('click', 'a', function() {
+      $buttonGroup.find('.active').removeClass('active');
+      $(this).addClass('active');
+    });
+  });
+
+
+  // Owl Carouse Testimonials
+
+  var owl = $("#owl-courses");
+
+  owl.owlCarousel({
+    pagination: true,
+    paginationNumbers: false,
+    autoPlay: true, //Set AutoPlay to 3 seconds
+    stopOnHover: true,
+    items: 4, //10 items above 1200px browser width
+    itemsDesktop: [1199, 3], //5 items between 1199px and 992px
+    itemsDesktopSmall: [991, 2], // betweem 991px and 768px
+    itemsTablet: [767, 2], //2 items between 767 and 501
+    itemsMobile: [575, 1] //1 items below 575
+  });
+
+
+  var owl = $("#owl-courses-second");
+
+  owl.owlCarousel({
+
+    pagination: true,
+    paginationNumbers: false,
+    autoPlay: 5000, //Set AutoPlay to 3 seconds
+    items: 5, //10 items above 1000px browser width
+    itemsDesktop: [1000, 4], // items between 1000px and 901px
+    itemsDesktopSmall: [900, 2], // betweem 900px and 601px
+    itemsTablet: [600, 1], // items between 600 and 0
+    itemsMobile: false // itemsMobile disabled - inherit from itemsTablet option
+  });
+
+
+  var owl = $("#owl-testimonials");
+
+  owl.owlCarousel({
+    navigation: true,
+    navigationText: ["", ""],
+    pagination: false,
+    paginationNumbers: false,
+    autoPlay: 4000, //Set AutoPlay to 3 seconds
+    items: 1, //10 items above 1000px browser width
+    itemsDesktop: [1000, 1], //5 items between 1000px and 901px
+    itemsDesktopSmall: [900, 1], // betweem 900px and 601px
+    itemsTablet: [600, 1], //2 items between 600 and 0
+    itemsMobile: false // itemsMobile disabled - inherit from itemsTablet option
+  });
+
+  // Custom Navigation Events
+  $(".next").click(function() {
+    owl.trigger('owl.next');
+  })
+  $(".prev").click(function() {
+    owl.trigger('owl.prev');
+  })
+
+
+
+  jQuery(document).ready(function() {
+    jQuery('.skillbar').each(function() {
+      jQuery(this).find('.skillbar-bar').animate({
+        width: jQuery(this).attr('data-percent')
+      }, 3000);
+    });
+  });
+
+
+
+  // Submenu Show/Hide
+  // $('nav.main-navigation ul > li, nav.main-navigation ul > li > ul > li').hover(function () {
+  //     $(this).children('ul').stop(true, true).slideDown(200);
+  // }, function () {
+  //     $(this).children('ul').stop(true, true).slideUp(200);
+  // });
+
+
+  $('nav.main-navigation > ul > li').each(function() {
+    $(this).find('.has-submenu').append('<em class="fa fa-angle-down"></em>');
+  });
+
+
+  // Blog Masonry
+  var blogIsotope = function() {
+    var imgLoad = imagesLoaded($('.blog-isotope'));
+
+    imgLoad.on('done', function() {
+
+      $('.blog-isotope').isotope({
+        "itemSelector": ".blog-post",
+      });
+
+    })
+
+    imgLoad.on('fail', function() {
+
+      $('.blog-isotope').isotope({
+        "itemSelector": ".blog-post",
+      });
+
+    })
+
+  }
+
+  blogIsotope();
+
+
+
+  // Flickr Images
+  $('.flickr-images').jflickrfeed({
+    limit: 6,
+    qstrings: { id: '56174287@N02' },
+    itemTemplate: '<li class="small-thumb"><a href="{{link}}" title="{{title}}"><img src="{{image_s}}" alt="{{title}}" /></a></li>'
+  });
+
+
+
+  // Off Canvas Navigation
+  var offcanvas_open = false;
+  var offcanvas_from_left = false;
+
+  function offcanvas_right() {
+
+    $(".sidebar-menu-container").addClass("slide-from-left");
+    $(".sidebar-menu-container").addClass("sidebar-menu-open");
+
+    offcanvas_open = true;
+    offcanvas_from_left = true;
+
+    $(".sidebar-menu").addClass("open");
+    $("body").addClass("offcanvas_open offcanvas_from_left");
+
+    $(".nano").nanoScroller();
+
+  }
+
+  function offcanvas_close() {
+    if (offcanvas_open === true) {
+
+      $(".sidebar-menu-container").removeClass("slide-from-left");
+      $(".sidebar-menu-container").removeClass("sidebar-menu-open");
+
+      offcanvas_open = false;
+      offcanvas_from_left = false;
+
+      //$('#sidebar-menu-container').css('max-height', 'inherit');
+      $(".sidebar-menu").removeClass("open");
+      $("body").removeClass("offcanvas_open offcanvas_from_left");
+
+    }
+  }
+
+  $(".side-menu-button").on('click', function() {
+    offcanvas_right();
+  });
+
+  $("#sidebar-menu-container").on("click", ".sidebar-menu-overlay", function(e) {
+    offcanvas_close();
+  });
+
+  $(".sidebar-menu-overlay").swipe({
+    swipeLeft: function(event, direction, distance, duration, fingerCount) {
+      offcanvas_close();
+    },
+    swipeRight: function(event, direction, distance, duration, fingerCount) {
+      offcanvas_close();
+    },
+    tap: function(event, direction, distance, duration, fingerCount) {
+      offcanvas_close();
+    },
+    threshold: 0
+  });
+
+  /*
+   * SLIDEUP/SLIDEDOWN NAV LATERALE on MOBILE
+   */
+  $("#course-information-btn").on('click', function() {
+    $("nav.lateral-menu").slideToggle(300, "linear");
+    //alert($(this).html());
+    //$(this).html().trim() === '<em class="fa fa-chevron-down"></em>'.trim() ? alert("true") : alert("false");
+    $(this).html(($(this).html().trim() === '<em class="fa fa-chevron-down"></em>'.trim() ? '<em class="fa fa-chevron-up"></em>' : '<em class="fa fa-chevron-down"></em>'));
+  });
+  /*
+   * TOGGLE NAV LATERALE per passare a visualizzazione contenuto 100%(col-12)
+   */
+  $("#course-information-collapse-btn").on('click', function() {
+    $("#side-menu").animate({ width: 'toggle' }, 0);
+    $(this).parents(".single-course").addClass("traslated-content");
+    if (typeof google === 'object' && typeof google.maps === 'object') {
+      resizeMAP();
+    }
+  });
+  $("#lateral-menu-return").on("click", function() {
+    $("#side-menu").animate({ width: 'toggle' }, 0);
+    $(this).parents(".single-course").removeClass("traslated-content");
+    if (typeof google === 'object' && typeof google.maps === 'object') {
+      resizeMAP();
+    }
+  });
+
+
+  // Mobile navigation
+  $(".responsive-menu .menu-item-has-children").append('<div class="show-submenu"><em class="fa fa-chevron-circle-down"></em></div>');
+
+  $(".responsive-menu").on("click", ".show-submenu", function(e) {
+    e.stopPropagation();
+
+    $(this).parent().toggleClass("current")
+      .children(".sub-menu").toggleClass("open");
+
+    $(this).html($(this).html() == '<em class="fa fa-chevron-circle-down"></em>' ? '<em class="fa fa-chevron-circle-up"></em>' : '<em class="fa fa-chevron-circle-down"></em>');
+    $(".nano").nanoScroller();
+  });
+
+  $(".responsive-menu").on("click", "a", function(e) {
+    if (($(this).attr('href') === "#") || ($(this).attr('href') === "")) {
+      $(this).parent().children(".show-submenu").trigger("click");
+      return false;
+    } else {
+      offcanvas_close();
+    }
+  });
+
+
+
+
+
+  // lateral navigation
+  $(".lateral-menu .menu-item-has-children").append('<div class="show-submenu"><em class="fa fa-chevron-up"></em></div>');
+
+  $(".lateral-menu").on("click", ".show-submenu", function(e) {
+    e.stopPropagation();
+
+    $(this).parent().toggleClass("current")
+      .children(".sub-menu").toggleClass("open");
+
+    $(this).html($(this).html() == '<em class="fa fa-chevron-right"></em>' ? '<em class="fa fa-chevron-up"></em>' : '<em class="fa fa-chevron-right"></em>');
+    $(".nano").nanoScroller();
+  });
+
+  $(".lateral-menu").on("click", "a", function(e) {
+    if (($(this).attr('href') === "#") || ($(this).attr('href') === "")) {
+      $(this).parent().children(".show-submenu").trigger("click");
+      return false;
+    } else {
+      offcanvas_close();
+    }
+  });
+
+
+
+
+
+  // revolution slider
+  /*
+   * INIZIALIZZAZIONE SLIDER IMMAGINI (MKT)
+   */
+  /*
+  $('.fullwidthbanner').revolution({
+    delay:6000,
+    startwidth:1170,
+    startheight:580,
+    onHoverStop: "off",
+    hideTimerBar: "on",
+    thumbWidth: 100,
+    thumbHeight: 50,
+    thumbAmount: 3,
+    hideThumbs: 200,
+    navigationType: "bullet",
+    navigationArrows: "verticalcentered",
+    navigationStyle: "preview4",
+    touchenabled: "on",
+    navOffsetHorizontal: 0,
+    navOffsetVertical: 20,
+    stopAtSlide: -1,
+    stopAfterLoops: -1,
+    hideCaptionAtLimit: 0,
+    hideAllCaptionAtLilmit: 0,
+    hideSliderAtLimit: 0,
+    hideThumbsOnMobile:"on",
+    hideNavDelayOnMobile:1500,
+    hideBulletsOnMobile:"on",
+    hideArrowsOnMobile:"on",
+    hideThumbsUnderResoluition:0,
+    fullWidth: "on",
+    shadow: 0
+  });
+  */
+
+  /*
+   * INIZIALIZZAZIONE SLIDER VIDEO (SI)
+   */
+  /*
+  var slider=$('#rev_slider_1').show().revolution({
+    sliderLayout: 'fullwidth', //'auto', 'fullwidth' or 'fullscreen'
+    gridheight:650,
+  });
+  */
+  /*
+   ** GESTIONE SCRITTA VIDEO
+   */
+  var startTop = $("#video-container").height() * 32.5 / 100;
+  var endTop = $("#video-container").height() * 37.5 / 100;
+  var captionH = $("#video-container  .videoCaption").height();
+
+  $("#video-container  .videoCaption").css("top", startTop + "px");
+  $("#video-container .videoCaption").animate({
+    opacity: 1,
+    /*top: "+="+endTop*/
+    //top: endTop -(captionH/2)
+    top: endTop
+  }, 1750);
+
+  $(window).resize(function() {
+    riposizionaCaptionVideo();
+  });
+
+  function riposizionaCaptionVideo() {
+
+    var newPos = $("#video-container").height() * 25 / 100;
+    var newOffsetY = $("#video-container  .videoCaption").height() / 2;
+    //newPos = newPos - newOffsetY;
+    $("#video-container  .videoCaption").css("top", newPos + "px");
+  }
+
+  $('.courses-slider').flexslider({
+    animation: "slide",
+    controlNav: "thumbnails"
+  });
+
+  $('.event-slider').flexslider({
+    animation: "slide",
+    controlNav: true,
+    directionNav: false,
+  });
+
+  $('.gallery-slider').flexslider({
+    animation: "slide",
+    controlNav: true,
+    directionNav: true,
+    prevText: "",
+    nextText: ""
+  });
+
+  /* ************************************** */
+  /* *****PARAMETRI GESTIONE SCROLL-TO***** */
+  /* ************************************** */
+  //var SCROLL_TO_DURATION = 350; // DURATION OF THE TOP SCROLLING ANIMATION (IN MS)
+  //var HEADER_OFFSET = $("#main-header").height();
+
+  // HIDE OR SHOW THE "BACK TO TOP" LINK
+  var offset = 500;
+  var offset_opacity = 1200; // BROWSER WINDOW SCROLL (IN PIXELS) AFTER WHICH THE "BACK TO TOP" LINK OPACITY IS REDUCED
+  var $back_to_top = $('.go-top'); // GRAB THE "BACK TO TOP" LINK
+  $(window).on('scroll', function() {
+    var footer_position = $(".footer1").offset().top;
+    var fixed_position = $back_to_top.offset().top;
+    var fixed_height = $back_to_top.height();
+    ($(this).scrollTop() > offset) ? $back_to_top.addClass('go-top-visible'): $back_to_top.removeClass('go-top-visible go-top-fade-out');
+    if ($(this).scrollTop() > offset_opacity) {
+      $back_to_top.addClass('go-top-fade-out');
+    }
+    if (fixed_position + fixed_height > footer_position) {
+      $back_to_top.addClass("negative");
+    } else {
+      $back_to_top.removeClass("negative");
+    }
+  });
+
+  // SCROLL TO #TARGET via .go-to click
+  $(".go-to").on('click', function(event) {
+
+    event.preventDefault();
+    var target = $(this).attr("target");
+    console.log($(this).data("samepage"));
+    if($(this).data("samepage") && !$("#"+target).hasClass("in")){
+      console.log("samePage presente and true like value");
+      $("#"+target).collapse("show");
+      $("#"+target).on('shown.bs.collapse', function(){
+        GoTo(target);
+      });
+    }else{
+      GoTo(target);
+    }
+
+    /*
+    ** SPOSTATO TUTTO NELLA FUNZIONE GoTo(target) per utilizzare stesso codice anche quando pagina viene chiamata con parametro Go=target
+    *
+    var target_offset_top = 0;
+    //console.log("target: "+target);
+    if (target == "" || target == null || target == undefined) {
+      return;
+    }
+    if (target != "top") {
+      target_offset_top = $("[go-to='" + target + "']").offset().top - HEADER_OFFSET;
+    }
+    $('body,html').animate({ scrollTop: target_offset_top, }, SCROLL_TO_DURATION);
+    */
+  });
+
+  /*
+  ** controllo presenza parametro go in URL ed attivazione scroll
+  */
+  if ($.urlParam("go")!=-1){
+    console.log("Parametro go trovato....Attivazione scroll-to: " + $.urlParam("go"));
+    console.log($("#"+$.urlParam("go")));
+    if ($("#"+$.urlParam("go")).length){
+      urlParamGo();
+    }
+  }
+  /*
+  **
+  */
+  function urlParamGo(){
+    switch($.urlParam("go")){
+      case "certificazioni":
+      case "certificazioni-inf":
+      case "certificazioni-ling":
+      case "alta-formazione":
+      case "tasseprimainfanzia":
+      case "certificazioni-aica":
+      case "sdi":
+        console.log("CASE 1");
+        $("#costi").collapse("show");
+        $("#costi").on('shown.bs.collapse', function(){
+            //alert('The collapsible content is now fully shown.');
+          $("#"+$.urlParam("go")).collapse("show");
+          $("#"+$.urlParam("go")).on('shown.bs.collapse', function(){
+            //alert('The collapsible content is now fully shown.');
+            GoTo($.urlParam("go"));
+            $("#"+$.urlParam("go")).unbind();
+          });
+          $("#costi").unbind();
+        });
+        break;
+      case "certificazioni-eipass":
+        console.log("CASE eipass");
+        $("#costi").collapse("show");
+        $("#costi").on('shown.bs.collapse', function(){
+            //alert('The collapsible content is now fully shown.');
+          $("#"+$.urlParam("go")).collapse("show");
+          $("#"+$.urlParam("go")).on('shown.bs.collapse', function(){
+            //alert('The collapsible content is now fully shown.');
+            var target="";
+            switch ($.urlParam("t")){
+              case "s":
+                target="certificazioni-eipass-scuola";
+                break;
+              case "i":
+                target="certificazioni-eipass-it";
+                break;
+              case "p":
+                target="certificazioni-eipass-prof";
+                break;
+            }
+            if(target!=""){
+              $("#"+target).collapse("show");
+              $("#"+target).on('shown.bs.collapse', function(){
+                GoTo($.urlParam("go"));
+                $("#"+$.urlParam("go")).unbind();
+                $("#"+target).unbind();
+              });
+            }else{
+              GoTo($.urlParam("go"));
+              $("#"+$.urlParam("go")).unbind();
+            }
+
+          });
+          $("#costi").unbind();
+        });
+        break;
+      case "uso-lim-base":
+      case "uso-didattico-tablet":
+      case "teacher":
+      case "basic":
+      case "7-moduli":
+      case "progressive":
+      case "it-security":
+      case "coding":
+      case "regolamenti":
+      case "iscrizione":
+      case "costi":
+      case "ict-web":
+      case "protagonista-scuola":
+      case "protagonista-scuola-4cert":
+        $("#"+$.urlParam("go")).collapse("show");
+        $("#"+$.urlParam("go")).on('shown.bs.collapse', function(){
+          //alert('The collapsible content is now fully shown.');
+          GoTo($.urlParam("go"));
+          $("#"+$.urlParam("go")).unbind();
+        });
+        break;
+        case "cartaservizi":
+        console.log("CASE 2");
+        $("#cartaservizi").collapse("show");
+        $("#cartaservizi").on('shown.bs.collapse', function(){
+            //alert('The collapsible content is now fully shown.');
+          $("#"+$.urlParam("go")).collapse("show");
+          $("#"+$.urlParam("go")).on('shown.bs.collapse', function(){
+            //alert('The collapsible content is now fully shown.');
+            GoTo($.urlParam("go"));
+            $("#"+$.urlParam("go")).unbind();
+          });
+          $("#cartaservizi").unbind();
+        });
+        break;
+      default:
+        GoTo($.urlParam("go"));
+        break;
+    }
+  }
+  /*
+  ** Caricamento contenuti esterni da file html.
+  ** ricerca di elementi con attributo data-include-page e caricamento del contenuto di file esterno nel contenitore
+  */
+  //console.log("Include trovati: "+$("[include-page]").length);
+  $("[include-page]").each(function(){
+    console.log("data include");
+    console.log($(this));
+    var file = $(this).attr("include-page");
+    console.log(file);
+    if (file) {
+      console.log("file ok");
+      $(this).load("/fileadmin/template_NEW/official/includes/"+file,function(){
+        console.log("Qui this chi divolo è?");
+        console.log($(this));
+        //seleziono tutti i pannelli figli (ovvero contenuti nell'HTML importato) e per ognuno di essi associo all'evento show.bs.collapse la gestione dello scroll e chiusura pannelli
+        var collapse_panels = $(this).find(".collapse");
+        collapse_panels.each(function(){
+          $(this).on('show.bs.collapse',function(evt){
+            gestionePannelliApertura(evt,$(this));
+          });
+          $(this).on('hide.bs.collapse',function(evt){
+            gestionePannelliChiusura(evt, $(this));
+          });
+        });
+
+        if ($.urlParam("go")!=-1){
+          console.log("Parametro go trovato....Attivazione POST LOAD scroll-to: " + $.urlParam("go"));
+          urlParamGo();
+        }
+      });
+    }
+  });
+
+  /*
+  * CUSTOM CHIUSURA E SCROLL PANNELLI
+  */
+  $(".collapse").on('show.bs.collapse',function(evt){
+    gestionePannelliApertura(evt,$(this));
+    //l'intero processo di gestione chiusura pannelli e scroll su quello aperto è demandato ad una funzione cui passo l'evento (show.bs.collapse) per interromperne la propagazione
+    // e l'oggetto stesso. Questa scelta è fatta perchè quando ho pannelli dentro file inclusi posso bindare ai soli pannelli "importati" la funzione di scroll e chiusura, senza duplicare il dinding
+    //rilanciando la funzione interamente su tutti i pannelli .collapse (vedi funzione sopra che gestisce include-page
+    /*
+    evt.stopPropagation();
+    var parent=$(this).data("parent");
+    console.log("INUGAMI");
+    console.log(parent);
+    if (parent!=""){
+      console.log(parent);
+      $("[data-parent='"+parent+"']").collapse("hide");
+    }
+    var _obj=$(this);
+    console.log(_obj);
+    setTimeout(function(){
+      var target_offset = _obj.offset().top - $("#main-header").height() - 100;
+      $('body,html').animate({ scrollTop: target_offset, }, 500);
+    },400);
+    */
+  });
+  $('.collapse').on('hide.bs.collapse', function (e) {
+    gestionePannelliChiusura(e, $(this));
+    })
+});
+
+function gestionePannelliChiusura(evt, _THIS) {
+    _THIS.find('.collapse').collapse('hide');
+    evt.stopPropagation();
+    }
+
+/*
+* CUSTOM CHIUSURA E SCROLL PANNELLI
+*/
+function gestionePannelliApertura(evt,_THIS){
+    evt.stopPropagation();
+    var parent=_THIS.data("parent");
+    console.log("INUGAMI");
+    console.log(parent);
+    if (parent!=""){
+      console.log(parent);
+      $("[data-parent='"+parent+"']").collapse("hide");
+    }
+    var _obj=_THIS;
+    console.log(_obj);
+    setTimeout(function(){
+      var target_offset = _obj.offset().top - $("#main-header").height() - 100;
+      $('body,html').animate({ scrollTop: target_offset, }, 500);
+    },400);
+}
+
+/*
+ * FUNZIONE JQUERY CHE ESTRAE I PARAMETRI GET NELLA URL E PERMETTE DI CHIAMARLI
+ * ex: $.urlParam("<nomeparametro>")
+ */
+$.urlParam = function(name) {
+  //console.log("Processo " + name);
+  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  //console.log("Result: "+result);
+  if (results != null || results != undefined) {
+    return results[1];
+  } else {
+    return -1;
+  }
+}
+
+
+/*
+ ** callback for success reCAPTCHA
+ */
+function successGoogleCaptcha() {
+  $("input[name='check_captcha']").val("OK");
+}
+/*
+ ** callback for expired reCAPTCHA
+ */
+function expiredGoogleCaptcha() {
+  $("input[name='check_captcha']").val("");
+}
+
+function validaMail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
+
+/*
+ ** GESTIONE FORM HOME e RICHIESTE INFO
+ */
+
+$("form#form-info-home, form#form-info").on("submit", function() {
+  console.log("submitting negato");
+  return false;
+});
+
+
+function LunghezzaMax(campo) {
+
+  if (campo.value.length > 400) {
+    alert("Il campo note deve contenere al massimo 400 caratteri...");
+    campo.value = campo.value.substring(0, 400);
+  }
+}
+
+
+function initMap(latidute, longitude, markerDesc) {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: latidute, lng: longitude },
+    zoom: 16,
+    streetViewControl: false
+  });
+
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(latidute, longitude),
+    map: map,
+    title: markerDesc,
+    icon: {
+      url: "/fileadmin/template_NEW/official/assets/images/marker-uniecampus.png",
+    },
+
+  });
+  //resize map on window resize
+  $(window).resize(function() {
+    google.maps.event.trigger(map, "resize");
+  });
+}
+
+function initMapAperture() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 5,
+    //streetViewControl: false,
+    center: { lat: 42.705481, lng: 12.996311 }
+  });
+
+  //create empty LatLngBounds object
+  var bounds = new google.maps.LatLngBounds();
+  //array con coordinate delle nuove sedi
+  var locations = [
+
+    [43.6154443, 13.5140958], // ANCONA
+    [44.5033491, 11.3447232], // BOLOGNA
+    [39.2968207, 16.2546881], // COSENZA
+    [44.4093663, 8.9418034], // GENOVA
+    [43.1086188, 12.3889962], // PERUGIA
+    [42.47209, 14.20916], // PESCARA
+    [43.7148943, 10.401018], // PISA
+    [45.4456239, 10.9541287], // VERONA
+    [46.0582045, 13.2318027], // UDINE
+    [40.4731865, 17.2363948], // TARANTO
+    [41.46291, 15.54553], //FOGGIA
+    [41.4662, 12.90214], //LATINA
+    [44.8028228, 10.3393177], //PARMA
+    [40.63731, 15.80298], //POTENZA
+    [40.679957, 14.7653572], //SALERNO
+    [45.6632, 12.24578],  //TREVISO
+    [46.0690325, 11.1228614], //TRENTO
+    [40.3622631, 18.1698635], //LECCE
+    [45.9549337, 12.6597702], //PORDENONE
+    [45.6513521, 13.7778565], //TRIESTE
+    [44.0607542, 12.5669947], //RIMINI
+    [45.5364588, 10.2211102], //BRESCIA
+    [44.91174, 8.61276], //ALESSANDRIA
+    [45.190243, 9.1536152], //PAVIA
+    [44.8333001, 11.6172043], //FERRARA
+    [41.6397181, 13.3429945], //FROSINONE
+    [42.4103422, 12.1081502], //VITERBO
+    [40.9126336, 14.7908317], //AVELLINO
+    [43.5009551, 12.202945], //CITTA' DI CASTELLO
+    [38.8859586, 16.598139], //CATANZARO
+    [44.1078202, 9.8184447], //LA SPEZIA
+    [45.6946972, 9.6658118], //BERGAMO
+    [45.4471079, 8.6144391], //NOVARA
+    [45.8119536, 9.0730035], //COMO
+    [45.8163774, 8.8265409], //VARESE
+    [44.700162, 10.6305087], //REGGIO EMILIA
+    [45.4823773, 12.2508116], //VENEZIA/MESTRE
+    [40.6353337, 17.9428522], //BRINDISI
+    [43.46667, 11.88322], //AREZZO
+    [44.39959, 12.18636], //RAVENNA
+    [43.3014117, 13.4436911], //MACERATA
+    [42.9599495, 13.8793526], //SANBENEDETTO DEL TRONTO
+    [44.64379, 10.93396], //MODENA
+    [41.0715756, 14.3350982], //CASERTA
+    [45.54425, 11.53725],  //VICENZA
+    [45.0586641, 9.6973778], //PIACENZA
+    [38.1868346, 15.5553808], //MESSINA
+
+
+  ];
+  //creazione marker
+  for (i = 0; i < locations.length; i++) {
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(locations[i][0], locations[i][1]),
+      map: map,
+      icon: {
+        url: "/fileadmin/template_NEW/official/assets/images/marker-uniecampus.png",
+      },
+    });
+    //extend the bounds to include each marker's position
+    bounds.extend(marker.position);
+  }
+
+  //now fit the map to the newly inclusive bounds
+  map.fitBounds(bounds);
+
+  //google.maps.event.trigger(map, "resize");
+
+
+  //resize map on window resize
+  $(window).resize(function() {
+    google.maps.event.trigger(map, "resize");
+  });
+
+
+
+  //(optional) restore the zoom level after the map is done scaling
+  /*
+  var listener = google.maps.event.addListener(map, "idle", function () {
+    map.setZoom(6);
+    google.maps.event.removeListener(listener);
+  });
+  */
+}
+
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+  for (var i = 0; i < 10; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
+
+function resizeMAP() {
+  google.maps.event.trigger(map, "resize");
+}
+
+
+/*
+** funzione per scrollare direttamente all'oggetto <target>
+*/
+function GoTo(target){
+  var target_offset_top = 0;
+  console.log("GoTo target: "+target);
+  if (target == "" || target == null || target == undefined) {
+    return;
+  }
+  if (target != "top") {
+    if ($("#" + target).length>0){
+      target_offset_top = $("#" + target).offset().top - HEADER_OFFSET;
+    }else if ($("[go-to='" + target + "']").length>0){
+      target_offset_top = $("[go-to='" + target + "']").offset().top - HEADER_OFFSET;
+    }else
+    console.log("target_offset_top: "+ target_offset_top);
+    console.log("SCROLL_TO_DURATION: "+SCROLL_TO_DURATION);
+  }
+  console.log("Offset Top: "+target_offset_top);
+  $('body,html').animate({ scrollTop: target_offset_top, }, SCROLL_TO_DURATION);
+}
+/*
+TODO: altra funzione per scrolling e apertura pannelli da same page. Nuova classe nell'html per il link.
+*/
+
+
+
+/*
+ * Controllo se elemento è raggiunto da scroll
+ */
+function checkElementInWindow(el) {
+  var hT = el.offset().top,    /*$('#scroll-to')*/
+    hH = el.outerHeight(),    /*$('#scroll-to')*/
+    wH = $(window).height(),
+    wS = $(this).scrollTop();
+//  console.log("hT: " + hT);
+//  console.log("hH: " + hH);
+//  console.log("wH: " + wH);
+//  console.log("wS: " + wS);
+//  console.log((hT - wH), wS);
+  if (wS > (hT + hH - wH)) {
+    return true;
+  }
+  return false;
+}
+
+$.fn.CountAnimation=function(){
+  console.log("CountAnimation");
+  console.log(this);
+
+  this.each(function(){
+    console.log($(this));
+    var element=$(this);
+    $(window).on("scroll",function(){
+      if(checkElementInWindow(element)){
+        //element reached
+        if(!element.hasClass("activate")){
+          element.addClass("activate");
+          var numberToReach= element.data("number-to-reach");
+          console.log("number to reach: "+numberToReach);
+          var myInterval=setInterval(function(){
+            var numberToWrite=parseInt(element.text())+1;
+            element.text(numberToWrite);
+            if(numberToWrite>=numberToReach){
+              clearInterval(myInterval);
+            }
+          },50);
+        }
+      }
+    });
+  });
+}
+

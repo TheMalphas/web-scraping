@@ -1,0 +1,570 @@
+// Jquery Confirm
+(function($) {
+	$.confirm = function(params) {
+		//console.log("confirm in privacy");
+		if ($('#confirmOverlay').length) {
+			// A confirm is already shown on the page:
+			return false;
+		}
+		var buttonHTML = '';
+		$.each(params.buttons, function(name, obj) {
+			// Generating the markup for the buttons:
+			buttonHTML += '<a href="#" class="button ' + obj['class'] + '">' + name + '<span></span></a>';
+			if (!obj.action) {
+				obj.action = function() {};
+			}
+		});
+		var markup = [
+			'<div id="confirmOverlay">',
+			'<div id="confirmBox">',
+			'<h1>', params.title, '</h1>',
+			'<p>', params.message, '</p>',
+			'<div id="confirmButtons">',
+			buttonHTML,
+			'</div></div></div>'
+		].join('');
+		$(markup).hide().appendTo('body').fadeIn();
+		//console.log("Setto margin");
+		//console.log("width: "+$("#confirmBox").outerWidth());
+		//console.log("height: "+$("#confirmBox").outerHeight());
+		$("#confirmBox").css({
+			"margin-left": "-" + ($("#confirmBox").outerWidth() / 2) + "px",
+			"margin-top": "-" + ($("#confirmBox").outerHeight() / 2) + "px"
+		});
+		var buttons = $('#confirmBox .button'),
+			i = 0;
+		$.each(params.buttons, function(name, obj) {
+			buttons.eq(i++).click(function() {
+				// Calling the action attribute when a
+				// click occurs, and hiding the confirm.
+				obj.action();
+				$.confirm.hide();
+				return false;
+			});
+		});
+	}
+	$.confirm.hide = function() {
+		$('#confirmOverlay').fadeOut(function() {
+			$(this).remove();
+		});
+	}
+})(jQuery);
+
+
+
+/*
+ *** FUNZIONI UTILITY PER CAPTCHA TEST
+ */
+var result = null;
+
+function getRandomNumber() {
+	n = Math.round(Math.random() * 10);
+	return n;
+}
+
+function generateCaptcha() {
+	var c = document.getElementById("canvasCaptcha");
+	var ctx = c.getContext("2d");
+	//pulisco canvas
+	ctx.clearRect(0, 0, c.width, c.height);
+
+	ctx.font = "16px Verdana";
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	var n1 = getRandomNumber();
+	var n2 = getRandomNumber();
+	ctx.fillText(n1 + "+" + n2 + "=", 50, 13);
+	//var result=n1+n2;
+	result = n1 + n2;
+	//return result;
+}
+
+function verificaCaptcha() {
+	var esito = false;
+	if ($("#canvasCaptcha").length > 0) {
+		var input = $("#canvasCaptchaText").val();
+		if ($.isNumeric(input)) {
+			if (input == result) {
+				console.log("captcha success");
+				esito = true;
+			} else {
+				esito = false;
+				console.log("captcha fail");
+				//lo ripulisco tutte le volte che genero
+				//var canvas = document.getElementById("canvasCaptcha");
+				//var context = canvas.getContext('2d');
+				//context.clearRect(0, 0, canvas.width, canvas.height);
+
+				//result=generateCaptcha();
+				generateCaptcha();
+			}
+		} else {
+			esito = false;
+			console.log("not numeric");
+			generateCaptcha();
+		}
+	}
+	return esito;
+}
+/* Generazione codice Captcha se presente */
+if ($("#canvasCaptcha").length > 0) {
+	//result = generateCaptcha();
+	generateCaptcha();
+}
+/*
+ ***
+ */
+
+
+// script
+$(document).ready(function() {
+	//PRIMA DI FARE IL BIND FACCIO UNBIND, così da prevenire eventuali doppi bind su bottoni già presenti e bindati dall'evento click con il jqconferma(casi multiform su stessa pagina)
+	$('.jqconferma').unbind("click");
+	$('.jqconferma').click(function() {
+		var _JQCONFERMA = $(this); //salvo oggetto bottone. Da ora tutte occorrenze di $('.jqconferma') saranno _JQCONFERMA
+		console.log("click in privacy");
+		/* Verifico subito captcha se fallisco esco dalla funzione */
+		if ($("#canvasCaptcha").length > 0) {
+			if (!verificaCaptcha()) {
+				alert("Il risultato della somma Captcha non è corretto");
+				document.getElementById("canvasCaptchaText").value = "";
+				return
+			}
+		}
+
+		//VERIFICHIAMO I DATI PRIMA DI FAR COMPARIRE LA FINESTRELLA
+		/**
+		 **Invece che documents devo usare jquery  eselezionare solo il form parent del bottone cliccato, altrimenti scateno l'evento per tutti i form presenti(nel caso fossero più di uno)
+		 **/
+		//var nome_v = document.forms["form_info"].elements["nome"].value;
+		//var cognome_v = document.forms["form_info"].elements["cognome"].value;
+		//var telefono_v = document.forms["form_info"].elements["telefono"].value;
+		//var email_v = document.forms["form_info"].elements["email"].value;
+		//var provincia_v = document.forms["form_info"].elements["provincia"].value;
+		//var servizio_v = document.forms["form_info"].elements["servizio"].value;
+		var nome_v = _JQCONFERMA.parents("form[name='form_info']").find("input[name='nome']").val();
+		var cognome_v = _JQCONFERMA.parents("form[name='form_info']").find("input[name='cognome']").val();
+		var telefono_v = _JQCONFERMA.parents("form[name='form_info']").find("input[name='telefono']").val();
+		var email_v = _JQCONFERMA.parents("form[name='form_info']").find("input[name='email']").val();
+		var provincia_v = _JQCONFERMA.parents("form[name='form_info']").find("select[name='provincia']").val();
+		var servizio_v = _JQCONFERMA.parents("form[name='form_info']").find("input[name='servizio']").val();
+
+		var cf_v = null;
+		if (!!document.forms["form_info"].elements["cod_fis"]) {
+			cf_v = document.forms["form_info"].elements["cod_fis"].value;
+		}
+		var trovato_v = false;
+		var messaggio_v = "Attenzione, i seguenti campi sono obbligatori:\n";
+		if (nome_v == "" || nome_v == "undefined" || nome_v.length < 3 || validaSoloCaratteri(nome_v) == false) {
+			trovato_v = true;
+		}
+		if (cognome_v == "" || cognome_v == "undefined" || cognome_v.length < 3 || validaSoloCaratteri(cognome_v) == false) {
+			trovato_v = true;
+		}
+		if (telefono_v == "" || telefono_v == "undefined" || telefono_v.length < 6 || validaTelefono(telefono_v) == false) {
+			trovato_v = true;
+		}
+		if (email_v == "" || email_v == "undefined" || validEmail(email_v) == false) {
+			trovato_v = true
+		}
+		if (provincia_v == "" || provincia_v == "undefined") {
+			trovato_v = true;
+		}
+		if (servizio_v == "" || servizio_v == "undefined") {
+			trovato_v = true;
+		}
+		console.log("nome_v: " + nome_v);
+		console.log("cognome_v: " + cognome_v);
+		console.log("telefono_v: " + telefono_v);
+		console.log("email_v: " + email_v);
+		console.log("provincia_v: " + provincia_v);
+		console.log("trovato_v: " + trovato_v);
+		console.log("messaggio_v: " + messaggio_v);
+		console.log("servizio_v: " + servizio_v);
+		console.log("cf_v: " + cf_v);
+
+		if (trovato_v == true) {
+			//qui entro se form non valido, scateno submit per validazione jquery (inutile perchèla validazione è live ma ok)
+			console.log("trovato_v==true");
+			_JQCONFERMA.trigger('submit'); //Solo Jquery
+		} else {
+			console.log("Form valida vado con i check");
+			//alert("a");
+			//pechè fare i submit? la form è ok, si deve controllre solo i checkbox
+			//_JQCONFERMA.trigger('submit');
+			var elem = _JQCONFERMA.closest('.item');
+			var rr = _JQCONFERMA.parents("form[name='form_info']").find("input[name='c_nego']").prop("checked");
+			var rPros = _JQCONFERMA.parents("form[name='form_info']").find("input[name='c_prosegui_comunque']").val();
+			console.log("rr: "+rr);
+			console.log("rPros: "+rPros);
+			if (rr == false && rPros != "trovato") {
+				console.log("lancio confirm dialog");
+				$.confirm({
+					'title': 'Attenzione!',
+					'message': 'Per ricevere informazioni promozionali pi&ugrave; dettagliate le consigliamo di cliccare su <b>ACCONSENTO</b>',
+					'buttons': {
+						'Prosegui comunque': {
+							'class': 'blue',
+							'action': function() {
+
+								//Scateniamo l'evento di submit così entra in gioco la validazione di JQuery
+								// $('.jqconferma').trigger('submit');
+								//NOSENSE
+								//_JQCONFERMA.trigger('submit');
+								//document.forms["form_info"].elements["c_prosegui_comunque"].value = "trovato";
+								_JQCONFERMA.parents("form[name='form_info']").find("input[name='c_prosegui_comunque']").val("trovato");
+								//Ora vediamo se i campi sono validati ed in caso mandiamo il submit
+								var nome = _JQCONFERMA.parents("form[name='form_info']").find("input[name='nome']").val();
+								var cognome = _JQCONFERMA.parents("form[name='form_info']").find("input[name='cognome']").val();
+								var telefono = _JQCONFERMA.parents("form[name='form_info']").find("input[name='telefono']").val();
+								var email = _JQCONFERMA.parents("form[name='form_info']").find("input[name='email']").val();
+								var provincia = _JQCONFERMA.parents("form[name='form_info']").find("select[name='provincia']").val();
+								var trovato = false;
+								//alert(validEmail(email));
+								var messaggio = "Attenzione, i seguenti campi sono obbligatori:\n";
+								if (nome == "" || nome == "undefined" || nome.length < 3 || validaSoloCaratteri(nome) == false) {
+									messaggio += "\n - Campo nome da compilare...";
+									trovato = true;
+								}
+								if (cognome == "" || cognome == "undefined" || cognome.length < 3 || validaSoloCaratteri(cognome) == false) {
+									messaggio += "\n - Campo cognome da compilare...";
+									trovato = true;
+								}
+								if (telefono == "" || telefono == "undefined" || telefono.length < 6 || validaTelefono(telefono) == false) {
+									messaggio += "\n - Campo telefono da compilare...";
+									trovato = true;
+								}
+								if (email == "" || email == "undefined" || validEmail(email) == false) {
+									messaggio += "\n - Campo e-mail da compilare...";
+									trovato = true
+								}
+								if (provincia == "" || provincia == "undefined") {
+									messaggio += "\n - Campo provincia da compilare...";
+									trovato = true;
+								}
+								//console.log("Prosegui comunque: "+trovato);
+								//console.log("SUBMITTO 1");
+								if (trovato == false) {
+									_JQCONFERMA.parents("form[name='form_info']").unbind("submit");
+									_JQCONFERMA.parents("form[name='form_info']").submit();
+								}
+
+							}
+						},
+						'Acconsento': {
+							'class': 'gray',
+							'action': function() {
+								//Spuntiamo acconsento
+								//document.forms["form_info"].elements["c_nego"].checked = true;
+								_JQCONFERMA.parents("form[name='form_info']").find("input[name='c_nego']").prop('checked', true);
+								//Scateniamo l'evento di submit così entra in gioco la validazione di JQuery
+								//NO SENSE
+								//_JQCONFERMA.trigger('submit');
+
+								//Ora vediamo se i campi sono validati ed in caso mandiamo il submit
+								var nome = _JQCONFERMA.parents("form[name='form_info']").find("input[name='nome']").val();
+								var cognome = _JQCONFERMA.parents("form[name='form_info']").find("input[name='cognome']").val();
+								var telefono = _JQCONFERMA.parents("form[name='form_info']").find("input[name='telefono']").val();
+								var email = _JQCONFERMA.parents("form[name='form_info']").find("input[name='email']").val();
+								var provincia = _JQCONFERMA.parents("form[name='form_info']").find("select[name='provincia']").val();
+								var trovato = false;
+								//alert(validEmail(email));
+								var messaggio = "Attenzione, i seguenti campi sono obbligatori:\n";
+								if (nome == "" || nome == "undefined" || nome.length < 3 || validaSoloCaratteri(nome) == false) {
+									messaggio += "\n - Campo nome da compilare...";
+									trovato = true;
+								}
+								if (cognome == "" || cognome == "undefined" || cognome.length < 3 || validaSoloCaratteri(cognome) == false) {
+									messaggio += "\n - Campo cognome da compilare...";
+									trovato = true;
+								}
+								if (telefono == "" || telefono == "undefined" || telefono.length < 6 || validaTelefono(telefono) == false) {
+									messaggio += "\n - Campo telefono da compilare...";
+									trovato = true;
+								}
+								if (email == "" || email == "undefined" || validEmail(email) == false) {
+									messaggio += "\n - Campo e-mail da compilare...";
+									trovato = true
+								}
+								if (provincia == "" || provincia == "undefined") {
+									messaggio += "\n - Campo provincia da compilare...";
+									trovato = true;
+								}
+								//console.log("Acconsento: "+trovato);
+								//console.log("SUBMITTO 2");
+								if (trovato == false) {
+									_JQCONFERMA.parents("form[name='form_info']").unbind("submit");
+									_JQCONFERMA.parents("form[name='form_info']").submit();
+								}
+
+							}
+
+						}
+					}
+				});
+			} else
+			//******************************************************************************************
+			{
+				//console.log("Campi OK e privacy checked o prosegui comunque già settato");
+				//Scateniamo l'evento di submit così entra in gioco la validazione di JQuery
+				//console.log("SUBMITTO 3");
+				_JQCONFERMA.parents("form[name='form_info']").unbind("submit");
+				_JQCONFERMA.trigger('submit');
+			}
+			//console.log("CONTINUA...");
+			//QUA non capisco quando ci arriva e perchè?! ho fatto tutto, submittato con check flaggato o meno.
+			/*if (rr.checked == true || rPros.value == "trovato") {
+				var nome = _JQCONFERMA.parents("form[name='form_info']").find("input[name='nome']").val();
+				var cognome = _JQCONFERMA.parents("form[name='form_info']").find("input[name='cognome']").val();
+				var telefono = _JQCONFERMA.parents("form[name='form_info']").find("input[name='telefono']").val();
+				var email = _JQCONFERMA.parents("form[name='form_info']").find("input[name='email']").val();
+				var provincia = _JQCONFERMA.parents("form[name='form_info']").find("select[name='provincia']").val();
+				var trovato = false;
+				//alert(validEmail(email));
+				var messaggio = "Attenzione, i seguenti campi sono obbligatori:\n";
+				if (nome == "" || nome == "undefined" || nome.length < 3 || validaSoloCaratteri(nome) == false) {
+					messaggio += "\n - Campo nome da compilare...";
+					trovato = true;
+				}
+				if (cognome == "" || cognome == "undefined" || cognome.length < 3 || validaSoloCaratteri(cognome) == false) {
+					messaggio += "\n - Campo cognome da compilare...";
+					trovato = true;
+				}
+				if (telefono == "" || telefono == "undefined" || telefono.length < 6 || validaTelefono(telefono) == false) {
+					messaggio += "\n - Campo telefono da compilare...";
+					trovato = true;
+				}
+				if (email == "" || email == "undefined" || validEmail(email) == false) {
+					messaggio += "\n - Campo e-mail da compilare...";
+					trovato = true
+				}
+				if (provincia == "" || provincia == "undefined") {
+					messaggio += "\n - Campo provincia da compilare...";
+					trovato = true;
+				}
+				// alert(nome + " " + trovato);
+				if (trovato == true) {
+					//alert(messaggio);
+					return false;
+				} else {
+					//console.log("SUBMITTO");
+					return _JQCONFERMA.parents("form[name='form_info']").submit();
+				}
+			}*/
+		}
+	});
+});
+
+function validEmail(stringa) {
+	var myregexp = /^[a-zA-Z0-9_\.\-]+\@([a-zA-Z0-9\-]+\.)+[a-zA-Z0-9]{2,4}$/;
+	if (myregexp.test(stringa) == false) return false;
+	else return true;
+}
+
+function validaSoloCaratteri(stringa) {
+	var myregexp = /^[a-zA-Zàèìòù\ \']+$/;
+	if (myregexp.test(stringa) == false) return false;
+	else return true;
+}
+
+function validaTelefono(stringa) {
+	var myregexp = /^[0-9\-\(\)\ ]+$/;
+	if (myregexp.test(stringa) == false) return false;
+	else return true;
+}
+
+//NON MI SEMBRA SIA CHIAMATA (ANDREA2020)
+function valida_dati_settembre_2011() {
+
+	// MODIFICHE 26/09/2011
+	var rr = document.forms["form_info"].elements["c_nego"];
+
+	if (rr.checked == false) {
+		//window.open("/include/art_informativa.html","","width=500,height=300,top=200,left=200,scrollbars");
+		//29/06/2010
+		if (window.confirm("Per ricevere informazioni promozionali di suo interesse è necessario che lei clicchi su CONSENTO.") == true) {
+			var nome = document.forms["form_info"].elements["nome"].value;
+			var cognome = document.forms["form_info"].elements["cognome"].value;
+			var telefono = document.forms["form_info"].elements["telefono"].value;
+			var email = document.forms["form_info"].elements["email"].value;
+			var provincia = document.forms["form_info"].elements["provincia"].value;
+			var trovato = false;
+			var messaggio = "Attenzione, i seguenti campi sono obbligatori:\n";
+			if (nome == "" || nome == "undefined") {
+				messaggio += "\n - Campo nome da compilare...";
+				trovato = true;
+			}
+			if (cognome == "" || cognome == "undefined") {
+				messaggio += "\n - Campo cognome da compilare...";
+				trovato = true;
+			}
+			if (telefono == "" || telefono == "undefined") {
+				messaggio += "\n - Campo telefono da compilare...";
+				trovato = true;
+			}
+			if (email == "" || email == "undefined") {
+				messaggio += "\n - Campo e-mail da compilare...";
+				trovato = true
+			}
+			if (provincia == "" || provincia == "undefined") {
+				messaggio += "\n - Campo provincia da compilare...";
+				trovato = true;
+			}
+
+			// alert(nome + " " + trovato);
+			if (trovato == true) {
+				alert(messaggio);
+				return false;
+			} else return true;
+		} else
+			return false;
+	} else
+	//******************************************************************************************
+	{
+		var nome = document.forms["form_info"].elements["nome"].value;
+		var cognome = document.forms["form_info"].elements["cognome"].value;
+		var telefono = document.forms["form_info"].elements["telefono"].value;
+		var email = document.forms["form_info"].elements["email"].value;
+		var provincia = document.forms["form_info"].elements["provincia"].value;
+		var trovato = false;
+		var messaggio = "Attenzione, i seguenti campi sono obbligatori:\n";
+		if (nome == "" || nome == "undefined") {
+			messaggio += "\n - Campo nome da compilare...";
+			trovato = true;
+		}
+		if (cognome == "" || cognome == "undefined") {
+			messaggio += "\n - Campo cognome da compilare...";
+			trovato = true;
+		}
+		if (telefono == "" || telefono == "undefined") {
+			messaggio += "\n - Campo telefono da compilare...";
+			trovato = true;
+		}
+		if (email == "" || email == "undefined") {
+			messaggio += "\n - Campo e-mail da compilare...";
+			trovato = true
+		}
+		if (provincia == "" || provincia == "undefined") {
+			messaggio += "\n - Campo provincia da compilare...";
+			trovato = true;
+		}
+
+		// alert(nome + " " + trovato);
+		if (trovato == true) {
+			alert(messaggio);
+			return false;
+		} else return true;
+
+	}
+
+}
+
+
+//NON MI SEMBRA SIA CHIAMATA (ANDREA2020)
+function valida_dati() {
+
+	// MODIFICHE 26/05/2011
+	var rr = document.forms["form_info"].elements["c_nego"];
+	var trovato = false;
+	for (var i = 0; i < rr.length; i++) {
+		if (rr[i].checked) {
+			trovato = true;
+			valore = rr[i].value;
+			break;
+		}
+	}
+
+	if (trovato == false || valore == "nego") {
+		//window.open("/include/art_informativa.html","","width=500,height=300,top=200,left=200,scrollbars");
+		//29/06/2010
+		alert("Per continuare e\' necessario dare il consenso per l\'informativa sulla privacy!");
+		return false;
+	} else
+	//******************************************************************************************
+	{
+		var nome = document.forms["form_info"].elements["nome"].value;
+		var cognome = document.forms["form_info"].elements["cognome"].value;
+		var telefono = document.forms["form_info"].elements["telefono"].value;
+		var email = document.forms["form_info"].elements["email"].value;
+		var provincia = document.forms["form_info"].elements["provincia"].value;
+		trovato = false;
+		var messaggio = "Attenzione, i seguenti campi sono obbligatori:\n";
+		if (nome == "" || nome == "undefined") {
+			messaggio += "\n - Campo nome da compilare...";
+			trovato = true;
+		}
+		if (cognome == "" || cognome == "undefined") {
+			messaggio += "\n - Campo cognome da compilare...";
+			trovato = true;
+		}
+		if (telefono == "" || telefono == "undefined") {
+			messaggio += "\n - Campo telefono da compilare...";
+			trovato = true;
+		}
+		if (email == "" || email == "undefined") {
+			messaggio += "\n - Campo e-mail da compilare...";
+			trovato = true
+		}
+		if (provincia == "" || provincia == "undefined") {
+			messaggio += "\n - Campo provincia da compilare...";
+			trovato = true;
+		}
+
+		// alert(nome + " " + trovato);
+		if (trovato == true) {
+			alert(messaggio);
+			return false;
+		} else return true;
+
+	}
+
+}
+//NON MI SEMBRA SIA CHIAMATA(ANDREA 2020)
+function verifica_radio() {
+	/* var rr = document.forms["form_info"].elements["c_nego"];
+	 var trovato=false;
+	  for(var i=0; i<rr.length; i++) {
+	    if(rr[i].checked) {
+	     trovato = true;
+	      break;
+	    }
+	    }
+	 //if (trovato==false) document.forms["form_info"].elements["Submit"].disabled = true;
+	// alert(trovato);
+	*/
+
+	//29/06/2011
+	var rr = document.forms["form_info"].elements["c_nego"];
+	rr[0].checked = true;
+
+}
+
+function verifica_nego() {
+	/*
+	 var rr = document.forms["form_info"].elements["c_nego"];
+	 var risultato;
+	  for(var i=0; i<rr.length; i++) {
+	    if(rr[i].checked) {
+	      risultato = rr[i].value;
+	      break;
+	    }
+	}
+	if (risultato=="nego")
+	    {
+	        //document.forms["form_info"].elements["Submit"].disabled = true;
+	        window.open("/include/art_informativa.html","","width=500,height=300,top=200,left=200,scrollbars");
+	    }
+	    else document.forms["form_info"].elements["Submit"].disabled = false;
+
+	//alert(risultato);
+	*/
+}
+
+
+// espandicollassa
+function espandicollassa() {
+	for (var i = 0; i < espandicollassa.arguments.length; i++) {
+		var element = document.getElementById(espandicollassa.arguments[i]);
+		element.style.display = (element.style.display == "none") ? "block" : "none";
+	}
+}

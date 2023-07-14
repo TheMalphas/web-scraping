@@ -1,0 +1,103 @@
+/* Default style sheet for SrLanguageMenu */
+.tx-srlanguagemenu,
+.tx-srlanguagemenu .links-list-header {
+	font-family: Verdana, sans-serif;
+	line-height: 100%;
+	/*margin-top: 8px;
+	padding: 0;*/
+	text-indent: 0;
+	/*new added*/
+	padding: 15px 25px;
+}
+.tx-srlanguagemenu .CUR,
+.tx-srlanguagemenu .NO,
+.tx-srlanguagemenu .INACT {
+	/*float: left;*/
+	font-size: .8em;
+	margin: 0px 4px;
+	/* new added*/
+	display: inline-block;
+}
+.tx-srlanguagemenu .CUR a,
+.tx-srlanguagemenu .NO a,
+.tx-srlanguagemenu .INACT a {
+	background-color: transparent;
+	font-weight: bold;
+	text-decoration: none;
+}
+.tx-srlanguagemenu .CUR a:focus,
+.tx-srlanguagemenu .CUR a:hover,
+.tx-srlanguagemenu .CUR a:active,
+.tx-srlanguagemenu .NO a:focus,
+.tx-srlanguagemenu .NO a:hover,
+.tx-srlanguagemenu .NO a:active,
+.tx-srlanguagemenu .INACT a:focus,
+.tx-srlanguagemenu .INACT a:hover,
+.tx-srlanguagemenu .INACT a:active {
+	color: #333333;
+}
+.tx-srlanguagemenu .CUR a.flag:before,
+.tx-srlanguagemenu .CUR a.linked-language:before {
+	/*content: url(../Images/current.png);*/
+	content: url(../Images/current_white.png);
+	padding-right: 3px;
+}
+
+
+/*.tx-srlanguagemenu .CUR a.flag:after,
+.tx-srlanguagemenu .CUR a.linked-language:after,
+.tx-srlanguagemenu .CUR a.flag:after,
+.tx-srlanguagemenu .NO a.flag:after,
+.tx-srlanguagemenu .INACT a.flag:after*/
+/*.tx-srlanguagemenu > div > a.flag:after*/
+.tx-srlanguagemenu > div:after {
+	content: "|";
+	color: #fff;
+	margin-left: 2px;
+}
+/*.tx-srlanguagemenu > div:last-child > a.flag:after*/
+.tx-srlanguagemenu > div:last-child:after{
+	content: "";
+	margin: 0;
+}
+
+.tx-srlanguagemenu-links .SPC:before {
+	content: "|";
+	padding-right: 3px;
+}
+.tx-srlanguagemenu .tx-srlanguagemenu-flag-linked,
+.tx-srlanguagemenu .tx-srlanguagemenu-flag-unlinked {
+	height: 13px;
+	width: 20px;
+}
+.tx-srlanguagemenu img.tx-srlanguagemenu-flag-unlinked {
+	filter: grayscale(100%); /* Current draft standard */
+	-webkit-filter: grayscale(100%); /* New WebKit */
+	-moz-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */
+	filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='grayscale'><feColorMatrix%20type='matrix'%20values='0.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200.3333%200.3333%200.3333%200%200%200%200%200%201%200'/></filter></svg>#grayscale"); /* Firefox 3.5+ */
+	filter: gray; /* IE */
+	-webkit-filter: grayscale(1); /* Old WebKit */
+}
+.tx-srlanguagemenu fieldset {
+}
+.tx-srlanguagemenu fieldset legend {
+	/*background: url(../Images/language.png) no-repeat 2px 50%;
+	padding: 0 2px 2px 20px;*/
+}
+.tx-srlanguagemenu fieldset label {
+	display: none;
+}
+.tx-srlanguagemenu fieldset img.tx-srlanguagemenu-language-icon {
+	margin-right: 3px;
+	vertical-align: middle;
+}
+.tx-srlanguagemenu fieldset select {
+	background-color: #009933;
+	color: white;
+	font-size: .8em;
+}
+.tx-srlanguagemenu fieldset option {
+	padding: 2px 5px 0 2px;
+}
